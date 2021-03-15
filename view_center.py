@@ -28,8 +28,8 @@ def main():
     list_of_colors = read_color_codes("classes.csv")
     image_names_list = os.listdir(in_dir_images)
 
-    image_index = 18
-    target_index = 31
+    image_index = 35  # 18
+    target_index = 47
     img = io.imread(os.path.join(in_dir_images, image_names_list[image_index]))
     print("IMG --> ", image_names_list[image_index])
     print("CODED TARGET --> ", target_index+1)
@@ -53,6 +53,9 @@ def main():
         row_edges = row_edges[0]
         if len(row_edges):
             avr_in_row = (row_edges[0] + row_edges[-1])/2
+            if row_edges[0] == row_edges[-1]:
+                print("bad row")
+                break
             line_1_points.append([avr_in_row, row])
             line_1_xs.append(avr_in_row)
             line_1_ys.append(row)
@@ -66,6 +69,9 @@ def main():
         col_edges = col_edges[0]
         if len(col_edges):
             avr_in_col = (col_edges[0] + col_edges[-1])/2
+            if col_edges[0] == col_edges[-1]:
+                print("bad col")
+                break
             line_2_points.append([col, avr_in_col])
             line_2_xs.append(col)
             line_2_ys.append(avr_in_col)
@@ -82,6 +88,7 @@ def main():
 
         xs, ys = np.linalg.solve(A, B)
 
+    print("xs = ", xs, "ys = ", ys)
     fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(8, 3), sharex=True, sharey=True)
     ax1.imshow(img)
     ax1.axis("off")

@@ -48,11 +48,18 @@ def zhou_operator(target_mask):
     line_1_points = list()
     line_1_xs = list()
     line_1_ys = list()
+    epsilon = 2
     for row in range(img_edges.shape[0]):
         row_edges = np.nonzero(img_edges[row])
         row_edges = row_edges[0]
         if len(row_edges):
             avr_in_row = (row_edges[0] + row_edges[-1])/2
+            if row <= 0 + epsilon or row >= img_edges.shape[0] - epsilon:
+                print("BAD ROW FOR CODED TARGET")
+                line_1_points.clear()
+                line_1_xs.clear()
+                line_1_ys.clear()
+                break
             line_1_points.append([avr_in_row, row])
             line_1_xs.append(avr_in_row)
             line_1_ys.append(row)
@@ -66,6 +73,12 @@ def zhou_operator(target_mask):
         col_edges = col_edges[0]
         if len(col_edges):
             avr_in_col = (col_edges[0] + col_edges[-1])/2
+            if col <= 0 + epsilon or col >= img_edges.shape[1] - epsilon:
+                print("BAD COL FOR CODED TARGET")
+                line_2_points.clear()
+                line_2_xs.clear()
+                line_2_ys.clear()
+                break
             line_2_points.append([col, avr_in_col])
             line_2_xs.append(col)
             line_2_ys.append(avr_in_col)
@@ -87,8 +100,8 @@ def zhou_operator(target_mask):
 
 def main():
     argument_parser = argparse.ArgumentParser()
-    argument_parser.add_argument('-i', '--input_dir', default="D:\\Tasks\\python\\CodedTargets\\Data\\LABEL")
-    argument_parser.add_argument('-o', '--output_dir', default="D:\\Tasks\\python\\CodedTargets\\Data\\Centers")
+    argument_parser.add_argument('-i', '--input_dir', default="C:\\Data\\zhou_operator\\LABEL")
+    argument_parser.add_argument('-o', '--output_dir', default="C:\\Data\\zhou_operator\\Centers")
     argument_parser.add_argument('-c', '--classes_file', default="classes.csv")
 
     args = argument_parser.parse_args()
@@ -113,7 +126,9 @@ def main():
         with open(os.path.join(args.output_dir, out_name), "w") as result_file:
             for target_index in range(len(list_of_colors)):
                 mask_coded_target = np.all(img == list_of_colors[target_index], axis=-1)
+                print("CODED TARGET --> ", target_index+1)
                 p = zhou_operator(mask_coded_target)
+                print("====")
                 result_file.write("%d,%s,%s\n" % (target_index+1, p[0], p[1]))
 
         print("FILE %s with centers is READY" % os.path.join(args.output_dir, out_name))

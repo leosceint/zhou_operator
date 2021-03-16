@@ -22,14 +22,15 @@ def read_color_codes(file_path):
     return colors_list
 
 
-in_dir_images = "D:\\Tasks\\python\\CodedTargets\\Data\\LABEL"
+in_dir_images = "C:\\Data\\zhou_operator\\LABEL"
+
 
 def main():
     list_of_colors = read_color_codes("classes.csv")
     image_names_list = os.listdir(in_dir_images)
 
-    image_index = 35  # 18
-    target_index = 47
+    image_index = 3  # 18
+    target_index = 42
     img = io.imread(os.path.join(in_dir_images, image_names_list[image_index]))
     print("IMG --> ", image_names_list[image_index])
     print("CODED TARGET --> ", target_index+1)
@@ -48,29 +49,36 @@ def main():
     line_1_points = list()
     line_1_xs = list()
     line_1_ys = list()
+    epsilon = 2
     for row in range(img_edges.shape[0]):
         row_edges = np.nonzero(img_edges[row])
         row_edges = row_edges[0]
         if len(row_edges):
             avr_in_row = (row_edges[0] + row_edges[-1])/2
-            if row_edges[0] == row_edges[-1]:
-                print("bad row")
+            if row <= 0 + epsilon or row >= img_edges.shape[0] - epsilon:
+                print("BAD ROW. CODED TARGET --> ", target_index)
+                line_1_points.clear()
+                line_1_xs.clear()
+                line_1_ys.clear()
                 break
             line_1_points.append([avr_in_row, row])
             line_1_xs.append(avr_in_row)
             line_1_ys.append(row)
-
     # Проходим по столбцам
     line_2_points = list()
     line_2_xs = list()
     line_2_ys = list()
+    epsilon = 2
     for col in range(img_edges.shape[1]):
         col_edges = np.nonzero(img_edges[:, col])
         col_edges = col_edges[0]
         if len(col_edges):
             avr_in_col = (col_edges[0] + col_edges[-1])/2
-            if col_edges[0] == col_edges[-1]:
-                print("bad col")
+            if col <= 0 + epsilon or col >= img_edges.shape[1] - epsilon:
+                print("BAD COL. CODED TARGET --> ", target_index)
+                line_2_points.clear()
+                line_2_xs.clear()
+                line_2_ys.clear()
                 break
             line_2_points.append([col, avr_in_col])
             line_2_xs.append(col)

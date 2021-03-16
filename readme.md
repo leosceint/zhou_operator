@@ -26,4 +26,4 @@
 
 Пример
 
-`python find_centers_in_dataset.py -i "C:\LABEL" -o "C:\Centers" -c "classes.csv"`
+`find_centers_in_dataset.py -i "C:\LABEL" -o "C:\Centers" -c "classes.csv"`
